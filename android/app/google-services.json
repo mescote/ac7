@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "848135561725",
+    "project_id": "recipe-maker-19922",
+    "storage_bucket": "recipe-maker-19922.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:848135561725:android:83fb871c5e915e6dd77994",
+        "android_client_info": {
+          "package_name": "com.example.ac7"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyByOU8vM0zM00uv8A-unFCMELWnu2BpC8c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
