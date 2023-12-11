@@ -38,7 +38,7 @@ class _SignInPage extends State<SignIn> {
               Align(
                 alignment: Alignment.topLeft,
                 child: Padding(
-                  padding: const EdgeInsets.only(top: 96.0, left: 24),
+                  padding: const EdgeInsets.only(top: 72.0, left: 24),
                   child: Text(
                     "Sign In",
                     style: TextStyle(fontSize: 24,

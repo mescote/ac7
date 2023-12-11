@@ -37,7 +37,7 @@ class _SignUpPage extends State<SignUp> {
               Align(
                 alignment: Alignment.topLeft,
                 child: Padding(
-                  padding: const EdgeInsets.only(top: 96.0, left: 24),
+                  padding: const EdgeInsets.only(top: 72.0, left: 24),
                   child: Text(
                     "Sign Up",
                     style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black),
