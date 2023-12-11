@@ -200,6 +200,7 @@ class _EditRecipePage extends State<EditRecipe> {
         print(_recipe.image);
         imageUrl=_recipe.image;
       }
+
       _deleteRecipe();
       RecipeModel recipeModel = RecipeModel(
           name: name, owner: userLoggedIn?.email, description: description, image: imageUrl);

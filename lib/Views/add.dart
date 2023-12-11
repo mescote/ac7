@@ -201,6 +201,7 @@ class _AddRecipePage extends State<AddRecipe> {
 
       if(imageUrl.isEmpty){
         imageUrl = "https://previews.123rf.com/images/dapoomll/dapoomll1307/dapoomll130700007/21260096-seamless-wallpaper-with-fast-food.jpg";
+
         File returnedImage = File(imageUrl);
 
         if(returnedImage==null) return;

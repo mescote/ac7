@@ -139,6 +139,7 @@ class _RecipeDetailsViewPage extends State<RecipeDetailsView> {
       ),
     );
   }
+
   _deleteRecipe() async {
     QuerySnapshot querySnapshot = await FirebaseFirestore.instance
         .collection("Recipes")
