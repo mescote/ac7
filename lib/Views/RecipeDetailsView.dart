@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../Model/RecipeModel.dart';
+import 'edit.dart';
 
 class RecipeDetailsView extends StatefulWidget {
   final RecipeModel recipe;
@@ -88,14 +89,12 @@ class _RecipeDetailsViewPage extends State<RecipeDetailsView> {
                   ElevatedButton(
                     onPressed: () {
                       // Check fields
-                      /*
                       Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => EditRecipe(recipe: _recipe),
                         ),
                       );
-                      */
                     },
                     style: ElevatedButton.styleFrom(
                       foregroundColor: Colors.white,

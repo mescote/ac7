@@ -6,25 +6,35 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'package:image_picker/image_picker.dart';
 import '../Model/RecipeModel.dart';
+import 'package:image_picker/image_picker.dart';
 import 'list.dart';
 
-
-class AddRecipe extends StatefulWidget {
-  const AddRecipe({Key? key}) : super(key: key);
+class EditRecipe extends StatefulWidget {
+  final RecipeModel recipe;
+  const EditRecipe({required this.recipe, Key? key}) : super(key: key);
 
   @override
-  State<AddRecipe> createState() => _AddRecipePage();
+  State<EditRecipe> createState() => _EditRecipePage();
 }
 
-class _AddRecipePage extends State<AddRecipe> {
+class _EditRecipePage extends State<EditRecipe> {
+  late RecipeModel _recipe;
   final _database = FirebaseFirestore.instance;
   final userLoggedIn = FirebaseAuth.instance.currentUser;
   final myControllerRecipeName = TextEditingController();
   final myControllerDescription = TextEditingController();
   String imageUrl='';
   String? errorMessage, successMessage;
+
+  @override
+  void initState() {
+    super.initState();
+    _recipe = widget.recipe;
+    myControllerRecipeName.text = _recipe.name;
+    myControllerDescription.text = _recipe.description;
+    return super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,33 +44,28 @@ class _AddRecipePage extends State<AddRecipe> {
         FocusScope.of(context).unfocus();
       },
       child: Scaffold(
-        appBar: AppBar(
-          automaticallyImplyLeading: false,
-          title: Padding(
-            padding: const EdgeInsets.only(top: 0.0, right: 24),
-            child: Text("Add Recipe", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black)),
-          ),
-          backgroundColor: Colors.white,
-          centerTitle: false,
-          titleSpacing: 24,
-          actions: [
-            IconButton(
-              icon: Icon(Icons.arrow_back),
-              onPressed: () {
-                Navigator.pop(context); // Navigate back to the previous screen
-              },
-            ),
-          ],
-        ),
         body: SingleChildScrollView(
           child: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
+                // Header
+                const Align(
+                  alignment: Alignment.topLeft,
+                  child: Padding(
+                    padding: EdgeInsets.only(top: 96.0, left: 24),
+                    child: Text(
+                      "Edit Recipe",
+                      style: TextStyle(fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black),
+                    ),
+                  ),
+                ),
+
                 // Text Fields
                 Padding(
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 24, horizontal: 24),
+                  padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 24),
                   child: Column(
                     children: [
                       TextField(
@@ -82,7 +87,6 @@ class _AddRecipePage extends State<AddRecipe> {
                         maxLines: 10,
                         maxLength: 100,
                         decoration: const InputDecoration(
-                          hintText: "Recipe Description",
                           hintStyle: TextStyle(fontSize: 14,
                               color: Colors.grey),
                           focusedBorder: UnderlineInputBorder(
@@ -91,6 +95,7 @@ class _AddRecipePage extends State<AddRecipe> {
                           ),
                         ),
                       ),
+                      const SizedBox(height: 12),
 
                       if (errorMessage != null)
                         Text(
@@ -105,27 +110,31 @@ class _AddRecipePage extends State<AddRecipe> {
                     ],
                   ),
                 ),
-
-                // Image
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 12),
-                  child:
-                  ColoredBox(
-                    color: Colors.white,
-                    child: SizedBox(
-                      height: 42,
-                      child: IconButton(
-                        icon: const Icon(CupertinoIcons.camera),
-                        color: Colors.black,
-                        onPressed: () {
-                          _pickImageFromGallery();
-                        },
-                      )
-                    ),
+                const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 12),
+                  child: Center(
                   ),
                 ),
 
                 // Create Recipe Button
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  child:
+                  ColoredBox(
+                    color: Colors.purple.shade50,
+                    child: SizedBox(
+                        height: 40,
+                        child: IconButton(
+                          icon: const Icon(CupertinoIcons.camera),
+                          color: Colors.black,
+                          onPressed: () {
+                            _pickImageFromGallery();
+                          },
+                        )
+                    ),
+                  ),
+                ),
+
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 12),
                   child:
@@ -145,16 +154,16 @@ class _AddRecipePage extends State<AddRecipe> {
                           errorMessage = null;
                         });
                       }
-                      if (errorMessage == null) {
-                        // All fields are valid
-                        await _createRecipe(
+                      // All fields are valid
+                      if(errorMessage==null) {
+                        await _editRecipe(
                             myControllerRecipeName, myControllerDescription,
                             context);
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ListPage(),
-                          ),
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ListPage(),
+                            ),
                         );
                       }
                     },
@@ -162,7 +171,7 @@ class _AddRecipePage extends State<AddRecipe> {
                       foregroundColor: Colors.white,
                       backgroundColor: CupertinoColors.systemGrey,
                     ),
-                    child: const Text('Add Recipe'),
+                    child: const Text('Edit Recipe'),
                   ),
                 ),
               ],
@@ -173,12 +182,11 @@ class _AddRecipePage extends State<AddRecipe> {
     );
   }
 
-  _createRecipe(TextEditingController myControllerRecipeName,
+  _editRecipe(TextEditingController myControllerRecipeName,
       TextEditingController myControllerDescription, context) async {
     try {
       final String name = myControllerRecipeName.text.trim();
       final String description = myControllerDescription.text.trim();
-      bool isRepeated = await _recipeExists(name);
       if (name.isEmpty || description.isEmpty){
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -188,68 +196,56 @@ class _AddRecipePage extends State<AddRecipe> {
         );
         return;
       }
-      if(isRepeated){
-        // Handle repeated recipes or existing recipe if needed
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('This recipe already exists!'),
-            duration: Duration(seconds: 2),
-          ),
-        );
-        return;
+      if (imageUrl.isEmpty){
+        print(_recipe.image);
+        imageUrl=_recipe.image;
       }
+      _deleteRecipe();
+      RecipeModel recipeModel = RecipeModel(
+          name: name, owner: userLoggedIn?.email, description: description, image: imageUrl);
 
-      if(imageUrl.isEmpty){
-        imageUrl = "https://previews.123rf.com/images/dapoomll/dapoomll1307/dapoomll130700007/21260096-seamless-wallpaper-with-fast-food.jpg";
-        File returnedImage = File(imageUrl);
-
-        if(returnedImage==null) return;
-
-        String uniqueFileName=DateTime.now().microsecondsSinceEpoch.toString();
-
-        Reference referenceRoot = FirebaseStorage.instance.ref();
-        Reference referenceDirImages = referenceRoot.child('images');
-        Reference referenceImageToUpload = referenceDirImages.child(uniqueFileName);
-
-        try{
-          await referenceImageToUpload.putFile(File(returnedImage!.path));
-          imageUrl = await referenceImageToUpload.getDownloadURL();
-        }catch(error){
-          //some error
-        }
-      }
-      RecipeModel recipeModel = RecipeModel(name: name, owner: userLoggedIn?.email, description: description, image: imageUrl);
       await _database.collection("Recipes").add(recipeModel.toJson());
 
       // Clear text fields after successful addition
       myControllerRecipeName.clear();
       myControllerDescription.clear();
+      setState(() {});
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Recipe created successfully'),
+          content: Text('Recipe edit successfully'),
           duration: Duration(seconds: 2),
         ),
       );
     } catch (error) {
       // Handle errors
-      print('Error creating recipe: $error');
+      print('Error editing recipe: $error');
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Error creating recipe'),
+          content: Text('Error editing recipe'),
           duration: Duration(seconds: 2),
         ),
       );
     }
   }
 
-  Future<bool> _recipeExists(String name) async {
-    final querySnapshot = await _database
+  _deleteRecipe() async {
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
         .collection("Recipes")
-        .where('Name', isEqualTo: name).where('Owner', isEqualTo: userLoggedIn?.email)
+        .where("Name", isEqualTo: _recipe.name)
         .get();
-    return querySnapshot.docs.isNotEmpty;
-  }
 
+    // Check if there's a document with the given name
+    if (querySnapshot.docs.isNotEmpty) {
+      // Get the first document in the result (assuming there's only one match)
+      DocumentSnapshot documentSnapshot = querySnapshot.docs.first;
+      // Delete the document by its ID
+      await FirebaseFirestore.instance.collection("Recipes").doc(documentSnapshot.id).delete();
+
+      print('Document successfully deleted!');
+    } else {
+      print('No document found with the specified name.');
+    }
+  }
   Future _pickImageFromGallery() async {
     ImagePicker imagePicker = ImagePicker();
     XFile? returnedImage = await imagePicker.pickImage(source: ImageSource.gallery);
