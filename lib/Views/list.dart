@@ -110,25 +110,20 @@ class _ListPageState extends State<ListPage> {
             decoration: TextDecoration.none,
           ),
         ),
-        subtitle: Text(
-          recipe.description,
-          style: const TextStyle(
-            decoration: TextDecoration.none,
-          ),
+
+        leading: CircleAvatar(
+          backgroundImage: NetworkImage(recipe.image),
+          backgroundColor: Colors.grey,
         ),
-          leading: CircleAvatar(
-            backgroundImage: NetworkImage(recipe.image),
-            backgroundColor: Colors.grey,
-          ),
-          trailing: const Icon(Icons.navigate_next),
-          onTap: (){
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => RecipeDetailsView(recipe: recipe),
-              ),
-            );
-          }
+        trailing: const Icon(Icons.navigate_next),
+        onTap: (){
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => RecipeDetailsView(recipe: recipe),
+            ),
+          );
+        }
       ),
     );
   }

@@ -44,25 +44,29 @@ class _EditRecipePage extends State<EditRecipe> {
         FocusScope.of(context).unfocus();
       },
       child: Scaffold(
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          title: Padding(
+            padding: const EdgeInsets.only(top: 0.0, right: 24),
+            child: Text("Edit Recipe", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black)),
+          ),
+          backgroundColor: Colors.white,
+          centerTitle: false,
+          titleSpacing: 24,
+          actions: [
+            IconButton(
+              icon: Icon(Icons.arrow_back),
+              onPressed: () {
+                Navigator.pop(context); // Navigate back to the previous screen
+              },
+            ),
+          ],
+        ),
         body: SingleChildScrollView(
           child: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                // Header
-                const Align(
-                  alignment: Alignment.topLeft,
-                  child: Padding(
-                    padding: EdgeInsets.only(top: 96.0, left: 24),
-                    child: Text(
-                      "Edit Recipe",
-                      style: TextStyle(fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black),
-                    ),
-                  ),
-                ),
-
                 // Text Fields
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 24),
@@ -117,13 +121,14 @@ class _EditRecipePage extends State<EditRecipe> {
                 ),
 
                 // Create Recipe Button
+                // Image
                 Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  padding: const EdgeInsets.only(bottom: 12),
                   child:
                   ColoredBox(
-                    color: Colors.purple.shade50,
+                    color: Colors.white,
                     child: SizedBox(
-                        height: 40,
+                        height: 42,
                         child: IconButton(
                           icon: const Icon(CupertinoIcons.camera),
                           color: Colors.black,
@@ -171,7 +176,7 @@ class _EditRecipePage extends State<EditRecipe> {
                       foregroundColor: Colors.white,
                       backgroundColor: CupertinoColors.systemGrey,
                     ),
-                    child: const Text('Edit Recipe'),
+                    child: const Text('Edit'),
                   ),
                 ),
               ],
